@@ -44,6 +44,11 @@ namespace CityInfo.API.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<bool> CityExistsAsync(int cityId)
+        {
+            return await _context.Cties.AnyAsync(c => c.Id == cityId);
+        }
+
         public async Task<IEnumerable<PointOfInterest>> GetPointsOfInterestForCityAsync(int cityId)
         {
             return await _context.PointOfInterests
