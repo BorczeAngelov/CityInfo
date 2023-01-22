@@ -73,5 +73,30 @@ namespace CityInfo.API.Controllers
                 },
                 finalPointOfInterest);
         }
+
+
+        [HttpPut("{pointOfInterestId}")]
+        public ActionResult<PointOfInterestDto> UpdatePointOfInterest(
+            int cityId,
+            int pointOfInterestId,
+            [FromBody] PointOfInterestForCreationDto pointOfInterest)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(i => i.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
+            if (pointOfInterestFromStore == null)
+            {
+                return NotFound();
+            }
+
+            pointOfInterestFromStore.Name = pointOfInterest.Name;
+            pointOfInterestFromStore.Description = pointOfInterest.Description;
+
+            return NoContent();
+        }
     }
 }
