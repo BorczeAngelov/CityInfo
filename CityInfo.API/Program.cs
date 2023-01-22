@@ -33,6 +33,8 @@ builder.Services.AddDbContext<CityInfoContext>(
     dbContextOptions => dbContextOptions.UseSqlite(
         builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"])); //Note: you can also store DB connection in Windows -> environment variables
 
+builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
