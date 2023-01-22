@@ -120,29 +120,30 @@ namespace CityInfo.API.Controllers
         }
 
 
-        //[HttpPut("{pointofinterestid}")]
-        //public ActionResult<PointOfInterestDto> UpdatePointOfInterest(
-        //    int cityId,
-        //    int pointOfInterestId,
-        //    [FromBody] PointOfInterestForCreationDto pointOfInterest)
-        //{
-        //    var city = _citiesDataStore.Cities.FirstOrDefault(i => i.Id == cityId);
-        //    if (city == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPut("{pointofinterestid}")]
+        public async Task<ActionResult> UpdatePointOfInterest(
+            int cityId,
+            int pointOfInterestId,
+            [FromBody] PointOfInterestForCreationDto pointOfInterest)
+        {
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            }
 
-        //    var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
-        //    if (pointOfInterestFromStore == null)
-        //    {
-        //        return NotFound();
-        //    }
+            Entities.PointOfInterest? pointOfInterestEntity = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityId, pointOfInterestId);
+            if (pointOfInterestEntity == null)
+            {
+                return NotFound();
+            }
 
-        //    pointOfInterestFromStore.Name = pointOfInterest.Name;
-        //    pointOfInterestFromStore.Description = pointOfInterest.Description;
+            _mapper.Map(pointOfInterest,pointOfInterestEntity);
+            //pointOfInterestEntity.Name = pointOfInterest.Name; //done by mapper
+            //pointOfInterestEntity.Description = pointOfInterest.Description;  //done by mapper
+            await _cityInfoRepository.SaveChangesAsync();
 
-        //    return NoContent();
-        //}
+            return NoContent();
+        }
 
         //[HttpPatch("{pointofinterestid}")]
         //public ActionResult PartiallyUpdatePointOfInterest(
