@@ -2,6 +2,7 @@
 using CityInfo.API.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityInfo.API.Migrations
 {
     [DbContext(typeof(CityInfoContext))]
-    partial class CityInfoContextModelSnapshot : ModelSnapshot
+    [Migration("20230122184926_DataSeed")]
+    partial class DataSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
@@ -80,50 +82,6 @@ namespace CityInfo.API.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("PointOfInterests");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CityId = 1,
-                            Description = "The most visited urban park in the United States.",
-                            Name = "Central Park"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CityId = 1,
-                            Description = "A 102-story skyscraper located in Midtown Manhattan.",
-                            Name = "Empire State Building"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CityId = 2,
-                            Description = "A Gothic style cathedral, conceived by architects Jan and Pieter Appelmans.",
-                            Name = "Cathedral"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CityId = 2,
-                            Description = "The the finest example of railway architecture in Belgium.",
-                            Name = "Antwerp Central Station"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CityId = 3,
-                            Description = "A wrought iron lattice tower on the Champ de Mars, named after engineer Gustave Eiffel.",
-                            Name = "Eiffel Tower"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CityId = 3,
-                            Description = "The world's largest museum.",
-                            Name = "The Louvre"
-                        });
                 });
 
             modelBuilder.Entity("CityInfo.API.Entities.PointOfInterest", b =>
