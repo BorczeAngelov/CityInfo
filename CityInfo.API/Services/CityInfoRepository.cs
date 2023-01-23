@@ -20,18 +20,33 @@ namespace CityInfo.API.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name)
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name) &&
+                string.IsNullOrWhiteSpace(searchQuery))
             {
                 return await GetCitiesAsync();
             }
 
-            name = name.Trim();
-            return await _context.Cties
-                .Where(c => c.Name == name)
-                .OrderBy(c => c.Name)   //query is NOT YET executed; we are just building the query
-                .ToListAsync();         //query get executed ON DB (not on local machine) when running ToListAsync()
+            // collection to start from
+            IQueryable<City> collection = _context.Cties as IQueryable<City>; //for deferred execution
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {//filtering
+                name = name.Trim();
+                collection = collection.Where(c => c.Name == name);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery = searchQuery.Trim();
+                collection = collection.Where(c => c.Name.Contains(searchQuery) || 
+                    (c.Description != null && c.Description.Contains(searchQuery)));
+            }
+
+            collection = collection.OrderBy(c => c.Name);   //query is NOT YET executed; we are just building the query
+
+            return await collection.ToListAsync(); //query get executed ON DB (not on local machine) when running ToListAsync()
         }
 
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
