@@ -20,6 +20,20 @@ namespace CityInfo.API.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return await GetCitiesAsync();
+            }
+
+            name = name.Trim();
+            return await _context.Cties
+                .Where(c => c.Name == name)
+                .OrderBy(c => c.Name)   //query is NOT YET executed; we are just building the query
+                .ToListAsync();         //query get executed ON DB (not on local machine) when running ToListAsync()
+        }
+
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
         {
             if (includePointsOfInterest)
