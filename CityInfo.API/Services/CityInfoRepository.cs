@@ -20,7 +20,7 @@ namespace CityInfo.API.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<City>,PaginationMetadata)> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
             // collection to start from
             IQueryable<City> collection = _context.Cities as IQueryable<City>; //for deferred execution
@@ -38,12 +38,16 @@ namespace CityInfo.API.Services
                     (c.Description != null && c.Description.Contains(searchQuery)));
             }
 
+            var totalItemCount = await collection.CountAsync();
+            var paginationMetaData = new PaginationMetadata(totalItemCount, pageSize, currentPage: pageNumber);
 
-            return await collection
-                .OrderBy(c => c.Name) //query is NOT YET executed; we are just building the query
-                .Skip(pageSize * (pageNumber - 1)) //page at the end when the elements are ordered/sorted
-                .Take(pageSize)
-                .ToListAsync(); //query get executed ON DB (not on local machine) when running ToListAsync()
+            List<City> collectionToReturn = await collection
+                            .OrderBy(c => c.Name) //query is NOT YET executed; we are just building the query
+                            .Skip(pageSize * (pageNumber - 1)) //page at the end when the elements are ordered/sorted
+                            .Take(pageSize)
+                            .ToListAsync(); //query get executed ON DB (not on local machine) when running ToListAsync()
+
+            return (collectionToReturn, paginationMetaData); 
         }
 
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
