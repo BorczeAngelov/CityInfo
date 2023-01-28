@@ -8,7 +8,7 @@ using System.Text.Json;
 namespace CityInfo.API.Controllers
 {
     [ApiController] //Automatic HTTP 400 responses; Problem details for error status codes etc.
-    //[Authorize] //disable temporary
+    [Authorize] //disable temporary
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/cities")]
